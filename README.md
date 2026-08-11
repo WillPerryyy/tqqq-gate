@@ -12,9 +12,12 @@ All three must pass, holding two consecutive sessions, to read HOLD TQQQ.
 Verified at 99.98% signal agreement with the tested Python rule
 (`tqqq-strategy/spec.py`) across 6,646 sessions, 2000–2026.
 
-Needs a free [Alpha Vantage](https://www.alphavantage.co/support/#api-key) key —
-the only price API that sends the CORS headers a browser requires. The key is
-entered on your device and stored only in that device's localStorage. It is never
-in this repository.
+No API key and nothing to configure. `update_data.py` runs on a weekday schedule
+via GitHub Actions, pulls QQQ closes server-side (where CORS does not apply) and
+commits `data.json`; the page reads that file same-origin.
+
+That design exists because neither browser route works: Yahoo has the data but
+sends no CORS header, and Alpha Vantage sends CORS but puts history beyond 100
+days behind a paid plan — short of the 250 sessions the gates need.
 
 Reads the prior close; act at today's close. Not investment advice.

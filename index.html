@@ -21,14 +21,12 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--ink);
   font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
-  line-height:1.5;-webkit-font-smoothing:antialiased;
-  padding-env:env(safe-area-inset-top)}
+  line-height:1.5;-webkit-font-smoothing:antialiased}
 .wrap{max-width:520px;margin:0 auto;
   padding:calc(20px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom))}
 .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
 h1{font:600 15px/1.2 system-ui;margin:0;letter-spacing:.02em;color:var(--ink2)}
 .asof{font:500 11px ui-monospace,Menlo,monospace;color:var(--ink3)}
-
 .verdict{background:var(--panel);border:1px solid var(--rule);border-radius:16px;
   padding:22px 20px;text-align:center;margin-bottom:12px}
 .verdict .big{font:700 34px/1.1 system-ui;letter-spacing:-.02em}
@@ -38,7 +36,6 @@ h1{font:600 15px/1.2 system-ui;margin:0;letter-spacing:.02em;color:var(--ink2)}
 .verdict.stop{border-color:color-mix(in srgb,var(--stop) 45%,var(--rule))}
 .verdict.stop .big{color:var(--stop)}
 .verdict.unk .big{color:var(--warn);font-size:26px}
-
 .gate{background:var(--panel);border:1px solid var(--rule);border-radius:13px;
   padding:13px 15px;margin-bottom:9px;display:grid;
   grid-template-columns:22px 1fr auto;gap:11px;align-items:center}
@@ -48,14 +45,10 @@ h1{font:600 15px/1.2 system-ui;margin:0;letter-spacing:.02em;color:var(--ink2)}
 .gate .val{font:600 17px ui-monospace,Menlo,monospace;text-align:right;white-space:nowrap}
 .gate .thr{font:400 10.5px ui-monospace,monospace;color:var(--ink3);text-align:right}
 .pass .val{color:var(--go)} .block .val{color:var(--stop)}
-
 button{appearance:none;width:100%;border:1px solid var(--rule);background:var(--panel);
   color:var(--ink);font:600 15px system-ui;padding:14px;border-radius:12px;
   margin-top:12px;cursor:pointer}
-button.primary{background:var(--go);border-color:var(--go);color:#06120d}
 button:active{opacity:.75}
-input{width:100%;background:var(--sunk);border:1px solid var(--rule);border-radius:11px;
-  color:var(--ink);font:400 15px ui-monospace,monospace;padding:13px;margin-top:8px}
 .msg{border-radius:12px;padding:13px 15px;margin:12px 0;font:400 13px system-ui}
 .msg.err{background:color-mix(in srgb,var(--stop) 13%,var(--panel));
   border:1px solid color-mix(in srgb,var(--stop) 40%,var(--rule));color:var(--ink)}
@@ -63,10 +56,9 @@ input{width:100%;background:var(--sunk);border:1px solid var(--rule);border-radi
   border:1px solid color-mix(in srgb,var(--warn) 38%,var(--rule));color:var(--ink)}
 .foot{font:400 11.5px/1.55 system-ui;color:var(--ink3);margin-top:22px}
 a{color:var(--go)}
-.hide{display:none}
 .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--ink3);
   border-top-color:transparent;border-radius:50%;animation:s .7s linear infinite;
-  vertical-align:-2px;margin-right:7px}
+  vertical-align:-2px}
 @keyframes s{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spin{animation:none}}
 </style>
@@ -76,46 +68,33 @@ a{color:var(--go)}
 <div class="wrap">
   <div class="top"><h1>TQQQ GATE</h1><span class="asof" id="asof"></span></div>
 
-  <div id="setup" class="hide">
-    <div class="msg warn">Needs a free Alpha Vantage key — it is the only price API
-    that sends the CORS headers Safari requires. Takes about 30 seconds at
-    <a href="https://www.alphavantage.co/support/#api-key" target="_blank" rel="noopener">alphavantage.co</a>.
-    Stored only on this device.</div>
-    <input id="key" placeholder="paste API key" autocapitalize="off"
-      autocorrect="off" spellcheck="false">
-    <button class="primary" id="save">Save and check</button>
+  <div class="verdict" id="verdict">
+    <div class="big" id="big"><span class="spin"></span></div>
+    <div class="sub" id="vsub">Loading…</div>
   </div>
-
-  <div id="app" class="hide">
-    <div class="verdict" id="verdict">
-      <div class="big" id="big">—</div>
-      <div class="sub" id="vsub"></div>
-    </div>
-    <div id="gates"></div>
-    <div id="msgs"></div>
-    <button id="refresh">Refresh</button>
-    <button id="reset">Change API key</button>
-  </div>
+  <div id="gates"></div>
+  <div id="msgs"></div>
+  <button id="refresh">Refresh</button>
 
   <div class="foot">
     Gates computed on QQQ daily closes: 20-day realised vol &lt; 35%, 20d/250d vol
     ratio &lt; 1.10, drawdown from the 250-day high better than &minus;20% (re-entry
-    above &minus;10%), all three holding two consecutive sessions. The tested rule
-    uses the Nasdaq-100 index and total returns; QQQ price tracks it closely but is
-    not identical, so treat this as the field version of
+    above &minus;10%), all three holding two consecutive sessions.
+    Prices are refreshed once each weekday after the close and served from this
+    site, so there is no API key and nothing to configure.
+    The tested rule uses the Nasdaq-100 index and total returns; QQQ price tracks
+    it closely but is not identical, so this is the field version of
     <code>tqqq-strategy/spec.py</code>, not a replacement for it.
-    Reads the prior close — act at today's close. Not investment advice.
+    Reads the prior close &mdash; act at the next one. Not investment advice.
   </div>
 </div>
 
 <script>
 (function () {
   var P = {rvWin:20, rvThr:0.35, vrFast:20, vrSlow:250, vrThr:1.10,
-           ddWin:250, ddExit:0.20, ddReenter:0.10, persist:2, sym:"QQQ"};
-  var KEY="tqqqgate.key", CACHE="tqqqgate.cache";
-  var $=function(i){return document.getElementById(i)};
-
-  // iOS home-screen meta now lives statically in <head>
+           ddWin:250, ddExit:0.20, ddReenter:0.10, persist:2};
+  var CACHE = "tqqqgate.cache";
+  var $ = function(i){ return document.getElementById(i); };
 
   function sd(a){
     if(a.length<2) return NaN;
@@ -125,24 +104,19 @@ a{color:var(--go)}
   }
 
   function compute(dates, closes){
-    var n=closes.length, rets=[], i;
+    var n=closes.length, rets=[], i, j;
     for(i=1;i<n;i++) rets.push(closes[i]/closes[i-1]-1);
-    // Unadjusted prices contain split discontinuities. A single day beyond
-    // +-25% on a broad index ETF is a split, not a market move. Refuse rather
-    // than emit a signal computed off a corrupted return.
-    var bad=null;
-    for(i=Math.max(0,rets.length-P.ddWin-P.vrSlow); i<rets.length; i++)
-      if(Math.abs(rets[i])>0.25) bad=dates[i+1];
-    var need=P.vrSlow+P.ddWin;
-    if(n<need) return {err:"Only "+n+" sessions returned; need at least "+need+"."};
-    if(bad) return {err:"A daily move beyond 25% appears on "+bad+
-      ", which on QQQ means a split in the unadjusted series rather than a real move. "+
-      "Refusing to compute a signal from it."};
+    var need=P.vrSlow+2;
+    if(n<need) return {err:"Only "+n+" sessions available; the 250-day gates need at least "+need+"."};
+    for(i=0;i<rets.length;i++)
+      if(Math.abs(rets[i])>0.25)
+        return {err:"A "+(rets[i]*100).toFixed(0)+"% move on "+dates[i+1]+
+          " looks like a split rather than a market move. Refusing to compute a signal from it."};
 
-    var g3prev=1, out=null, comb=[], j;
+    var g3prev=1, out=null, comb=[];
     for(i=P.vrSlow; i<n; i++){
-      var r20=rets.slice(i-P.rvWin, i), r250=rets.slice(i-P.vrSlow, i);
-      var v20=sd(r20)*Math.sqrt(252), v250=sd(r250)*Math.sqrt(252);
+      var v20=sd(rets.slice(i-P.rvWin,i))*Math.sqrt(252);
+      var v250=sd(rets.slice(i-P.vrSlow,i))*Math.sqrt(252);
       var g1=v20<P.rvThr?1:0, ratio=v20/v250, g2=ratio<P.vrThr?1:0;
       var hi=-Infinity; for(j=i-P.ddWin+1;j<=i;j++) if(closes[j]>hi) hi=closes[j];
       var dd=closes[i]/hi-1, g3;
@@ -150,42 +124,36 @@ a{color:var(--go)}
       g3prev=g3;
       comb.push(Math.min(g1,Math.min(g2,g3)));
       out={date:dates[i], v20:v20, ratio:ratio, dd:dd, g1:g1, g2:g2, g3:g3,
-           sd20:sd(r20), hi:hi, close:closes[i]};
+           sd20:sd(rets.slice(i-P.rvWin,i))};
     }
-    // persistence: state flips only after `persist` consecutive agreeing days
     var sig=0, run=1;
     for(i=1;i<comb.length;i++){
       run = comb[i]===comb[i-1] ? run+1 : 1;
       if(run>=P.persist) sig=comb[i];
     }
-    var held=1;
-    for(i=comb.length-2;i>=0;i--){ if(comb[i]===comb[comb.length-1]) held++; else break; }
-    out.signal=sig; out.heldApprox=held;
+    out.signal=sig;
     return out;
   }
 
-  function render(g, cached){
-    $("app").classList.remove("hide"); $("setup").classList.add("hide");
-    $("msgs").innerHTML="";
+  function render(g, stale){
+    $("msgs").innerHTML = "";
     if(g.err){
       $("verdict").className="verdict unk";
       $("big").textContent="UNAVAILABLE";
       $("vsub").textContent="No signal produced.";
       $("gates").innerHTML="";
-      $("msgs").innerHTML='<div class="msg err">'+g.err+'</div>';
       $("asof").textContent="";
+      $("msgs").innerHTML='<div class="msg err">'+g.err+'</div>';
       return;
     }
-    var hold=g.signal===1;
-    $("verdict").className="verdict "+(hold?"go":"stop");
-    $("big").textContent=hold?"HOLD TQQQ":"HOLD T-BILLS";
-    var blockers=[];
-    if(!g.g1) blockers.push("absolute vol");
-    if(!g.g2) blockers.push("vol shock");
-    if(!g.g3) blockers.push("drawdown");
-    $("vsub").textContent = blockers.length
-      ? "Blocked by "+blockers.join(", ")+"."
-      : "All three gates pass.";
+    var hold = g.signal===1;
+    $("verdict").className = "verdict " + (hold?"go":"stop");
+    $("big").textContent = hold ? "HOLD TQQQ" : "HOLD T-BILLS";
+    var b=[];
+    if(!g.g1) b.push("absolute vol");
+    if(!g.g2) b.push("vol shock");
+    if(!g.g3) b.push("drawdown");
+    $("vsub").textContent = b.length ? "Blocked by "+b.join(", ")+"." : "All three gates pass.";
     $("asof").textContent = "close "+g.date;
 
     var trip=(P.rvThr/Math.sqrt(252)*100).toFixed(3);
@@ -204,56 +172,44 @@ a{color:var(--go)}
         '<div><div class="val">'+r.val+'</div><div class="thr">'+r.thr+'</div></div></div>';
     }).join("");
 
-    if(cached) $("msgs").innerHTML='<div class="msg warn">Offline — showing the last '+
-      'successful reading, from close '+g.date+'. Pull a refresh when you have signal.</div>';
+    if(stale) $("msgs").innerHTML =
+      '<div class="msg warn">Offline &mdash; showing the last reading you loaded, from '+
+      'close '+g.date+'. Refresh when you have signal.</div>';
   }
 
-  function load(force){
-    var k=localStorage.getItem(KEY);
-    if(!k){ $("setup").classList.remove("hide"); $("app").classList.add("hide"); return; }
-    $("app").classList.remove("hide"); $("setup").classList.add("hide");
+  function load(){
     $("big").innerHTML='<span class="spin"></span>';
-    $("vsub").textContent="Fetching "+P.sym+" history…";
-    var url="https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol="+
-            P.sym+"&outputsize=full&apikey="+encodeURIComponent(k);
-    fetch(url).then(function(r){return r.json()}).then(function(d){
-      if(d["Note"]||d["Information"]) throw new Error(
-        "Alpha Vantage rate limit or key problem: "+(d["Note"]||d["Information"]));
-      if(d["Error Message"]) throw new Error("Alpha Vantage rejected the request: "+d["Error Message"]);
-      var ts=d["Time Series (Daily)"];
-      if(!ts) throw new Error("Unexpected response shape — no daily series returned.");
-      var dates=Object.keys(ts).sort();
-      var closes=dates.map(function(dt){return parseFloat(ts[dt]["4. close"])});
-      var g=compute(dates, closes);
-      try{ localStorage.setItem(CACHE, JSON.stringify(g)); }catch(e){}
-      render(g,false);
-    }).catch(function(e){
-      var c=localStorage.getItem(CACHE);
-      if(c){ try{ render(JSON.parse(c), true); }catch(_){ } }
-      else {
-        $("verdict").className="verdict unk";
-        $("big").textContent="UNAVAILABLE"; $("vsub").textContent="";
-        $("gates").innerHTML="";
-      }
-      $("msgs").insertAdjacentHTML("beforeend",
-        '<div class="msg err">'+String(e.message||e)+'</div>');
-    });
+    $("vsub").textContent="Loading…";
+    fetch("data.json?t="+Date.now(), {cache:"no-store"})
+      .then(function(r){
+        if(!r.ok) throw new Error("Price file returned HTTP "+r.status+".");
+        return r.json();
+      })
+      .then(function(d){
+        if(!d.dates || !d.closes || d.dates.length !== d.closes.length)
+          throw new Error("Price file is malformed.");
+        var g = compute(d.dates, d.closes);
+        g.updated = d.updated;
+        try { localStorage.setItem(CACHE, JSON.stringify(g)); } catch(e){}
+        render(g,false);
+      })
+      .catch(function(e){
+        var c=localStorage.getItem(CACHE);
+        if(c){ try{ render(JSON.parse(c), true); }catch(_){} }
+        else {
+          $("verdict").className="verdict unk";
+          $("big").textContent="UNAVAILABLE"; $("vsub").textContent="";
+          $("gates").innerHTML="";
+        }
+        $("msgs").insertAdjacentHTML("beforeend",
+          '<div class="msg err">'+String(e.message||e)+'</div>');
+      });
   }
 
-  $("save").addEventListener("click", function(){
-    var v=$("key").value.trim();
-    if(!v) return;
-    localStorage.setItem(KEY, v); load(true);
-  });
-  $("refresh").addEventListener("click", function(){ load(true); });
-  $("reset").addEventListener("click", function(){
-    localStorage.removeItem(KEY); localStorage.removeItem(CACHE);
-    $("setup").classList.remove("hide"); $("app").classList.add("hide");
-  });
-
+  $("refresh").addEventListener("click", load);
   var c=localStorage.getItem(CACHE);
-  if(c && localStorage.getItem(KEY)){ try{ render(JSON.parse(c), true); }catch(e){} }
-  load(false);
+  if(c){ try{ render(JSON.parse(c), true); }catch(e){} }
+  load();
 })();
 </script>
 </body>
