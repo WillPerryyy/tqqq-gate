@@ -27,11 +27,16 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- data.json; then
-            echo "data.json unchanged (market holiday, or already current)"
+          # data.json carries an `updated` timestamp, so the file differs on
+          # every run. Compare the last close instead, or this always commits
+          # and the no-op branch below never fires.
+          LAST=$(python -c "import json;print(json.load(open('data.json'))['last_close'])")
+          PREV=$(git show HEAD:data.json 2>/dev/null | python -c "import json,sys;print(json.load(sys.stdin)['last_close'])" 2>/dev/null || echo "none")
+          if [ "$LAST" = "$PREV" ]; then
+            echo "last close still $LAST (market holiday, or already current) - nothing to commit"
+            git checkout -- data.json
             exit 0
           fi
-          LAST=$(python -c "import json;print(json.load(open('data.json'))['last_close'])")
           git add data.json
           git commit -m "prices: close $LAST"
           git push
