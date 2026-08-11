@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TQQQ Gate">
+<meta name="theme-color" content="#0d1011">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="icon" href="icon.svg">
+<title>TQQQ Gate</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#0d1011; --panel:#171b1c; --sunk:#0a0d0e; --rule:#262c2e;
+  --ink:#eef1f0; --ink2:#a7b0ae; --ink3:#727b79;
+  --go:#3ba97f; --stop:#d8694b; --warn:#c99a3a;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  line-height:1.5;-webkit-font-smoothing:antialiased;
+  padding-env:env(safe-area-inset-top)}
+.wrap{max-width:520px;margin:0 auto;
+  padding:calc(20px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom))}
+.top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+h1{font:600 15px/1.2 system-ui;margin:0;letter-spacing:.02em;color:var(--ink2)}
+.asof{font:500 11px ui-monospace,Menlo,monospace;color:var(--ink3)}
+
+.verdict{background:var(--panel);border:1px solid var(--rule);border-radius:16px;
+  padding:22px 20px;text-align:center;margin-bottom:12px}
+.verdict .big{font:700 34px/1.1 system-ui;letter-spacing:-.02em}
+.verdict .sub{font:400 13px system-ui;color:var(--ink2);margin-top:7px}
+.verdict.go{border-color:color-mix(in srgb,var(--go) 45%,var(--rule))}
+.verdict.go .big{color:var(--go)}
+.verdict.stop{border-color:color-mix(in srgb,var(--stop) 45%,var(--rule))}
+.verdict.stop .big{color:var(--stop)}
+.verdict.unk .big{color:var(--warn);font-size:26px}
+
+.gate{background:var(--panel);border:1px solid var(--rule);border-radius:13px;
+  padding:13px 15px;margin-bottom:9px;display:grid;
+  grid-template-columns:22px 1fr auto;gap:11px;align-items:center}
+.gate .n{font:600 12px ui-monospace,monospace;color:var(--ink3)}
+.gate .nm{font:500 14px system-ui}
+.gate .note{font:400 11.5px system-ui;color:var(--ink3);margin-top:2px}
+.gate .val{font:600 17px ui-monospace,Menlo,monospace;text-align:right;white-space:nowrap}
+.gate .thr{font:400 10.5px ui-monospace,monospace;color:var(--ink3);text-align:right}
+.pass .val{color:var(--go)} .block .val{color:var(--stop)}
+
+button{appearance:none;width:100%;border:1px solid var(--rule);background:var(--panel);
+  color:var(--ink);font:600 15px system-ui;padding:14px;border-radius:12px;
+  margin-top:12px;cursor:pointer}
+button.primary{background:var(--go);border-color:var(--go);color:#06120d}
+button:active{opacity:.75}
+input{width:100%;background:var(--sunk);border:1px solid var(--rule);border-radius:11px;
+  color:var(--ink);font:400 15px ui-monospace,monospace;padding:13px;margin-top:8px}
+.msg{border-radius:12px;padding:13px 15px;margin:12px 0;font:400 13px system-ui}
+.msg.err{background:color-mix(in srgb,var(--stop) 13%,var(--panel));
+  border:1px solid color-mix(in srgb,var(--stop) 40%,var(--rule));color:var(--ink)}
+.msg.warn{background:color-mix(in srgb,var(--warn) 12%,var(--panel));
+  border:1px solid color-mix(in srgb,var(--warn) 38%,var(--rule));color:var(--ink)}
+.foot{font:400 11.5px/1.55 system-ui;color:var(--ink3);margin-top:22px}
+a{color:var(--go)}
+.hide{display:none}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid var(--ink3);
+  border-top-color:transparent;border-radius:50%;animation:s .7s linear infinite;
+  vertical-align:-2px;margin-right:7px}
+@keyframes s{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="top"><h1>TQQQ GATE</h1><span class="asof" id="asof"></span></div>
+
+  <div id="setup" class="hide">
+    <div class="msg warn">Needs a free Alpha Vantage key — it is the only price API
+    that sends the CORS headers Safari requires. Takes about 30 seconds at
+    <a href="https://www.alphavantage.co/support/#api-key" target="_blank" rel="noopener">alphavantage.co</a>.
+    Stored only on this device.</div>
+    <input id="key" placeholder="paste API key" autocapitalize="off"
+      autocorrect="off" spellcheck="false">
+    <button class="primary" id="save">Save and check</button>
+  </div>
+
+  <div id="app" class="hide">
+    <div class="verdict" id="verdict">
+      <div class="big" id="big">—</div>
+      <div class="sub" id="vsub"></div>
+    </div>
+    <div id="gates"></div>
+    <div id="msgs"></div>
+    <button id="refresh">Refresh</button>
+    <button id="reset">Change API key</button>
+  </div>
+
+  <div class="foot">
+    Gates computed on QQQ daily closes: 20-day realised vol &lt; 35%, 20d/250d vol
+    ratio &lt; 1.10, drawdown from the 250-day high better than &minus;20% (re-entry
+    above &minus;10%), all three holding two consecutive sessions. The tested rule
+    uses the Nasdaq-100 index and total returns; QQQ price tracks it closely but is
+    not identical, so treat this as the field version of
+    <code>tqqq-strategy/spec.py</code>, not a replacement for it.
+    Reads the prior close — act at today's close. Not investment advice.
+  </div>
+</div>
+
+<script>
+(function () {
+  var P = {rvWin:20, rvThr:0.35, vrFast:20, vrSlow:250, vrThr:1.10,
+           ddWin:250, ddExit:0.20, ddReenter:0.10, persist:2, sym:"QQQ"};
+  var KEY="tqqqgate.key", CACHE="tqqqgate.cache";
+  var $=function(i){return document.getElementById(i)};
+
+  // iOS home-screen meta now lives statically in <head>
+
+  function sd(a){
+    if(a.length<2) return NaN;
+    var m=0,i; for(i=0;i<a.length;i++) m+=a[i]; m/=a.length;
+    var s=0; for(i=0;i<a.length;i++) s+=(a[i]-m)*(a[i]-m);
+    return Math.sqrt(s/(a.length-1));
+  }
+
+  function compute(dates, closes){
+    var n=closes.length, rets=[], i;
+    for(i=1;i<n;i++) rets.push(closes[i]/closes[i-1]-1);
+    // Unadjusted prices contain split discontinuities. A single day beyond
+    // +-25% on a broad index ETF is a split, not a market move. Refuse rather
+    // than emit a signal computed off a corrupted return.
+    var bad=null;
+    for(i=Math.max(0,rets.length-P.ddWin-P.vrSlow); i<rets.length; i++)
+      if(Math.abs(rets[i])>0.25) bad=dates[i+1];
+    var need=P.vrSlow+P.ddWin;
+    if(n<need) return {err:"Only "+n+" sessions returned; need at least "+need+"."};
+    if(bad) return {err:"A daily move beyond 25% appears on "+bad+
+      ", which on QQQ means a split in the unadjusted series rather than a real move. "+
+      "Refusing to compute a signal from it."};
+
+    var g3prev=1, out=null, comb=[], j;
+    for(i=P.vrSlow; i<n; i++){
+      var r20=rets.slice(i-P.rvWin, i), r250=rets.slice(i-P.vrSlow, i);
+      var v20=sd(r20)*Math.sqrt(252), v250=sd(r250)*Math.sqrt(252);
+      var g1=v20<P.rvThr?1:0, ratio=v20/v250, g2=ratio<P.vrThr?1:0;
+      var hi=-Infinity; for(j=i-P.ddWin+1;j<=i;j++) if(closes[j]>hi) hi=closes[j];
+      var dd=closes[i]/hi-1, g3;
+      if(dd < -P.ddExit) g3=0; else if(dd > -P.ddReenter) g3=1; else g3=g3prev;
+      g3prev=g3;
+      comb.push(Math.min(g1,Math.min(g2,g3)));
+      out={date:dates[i], v20:v20, ratio:ratio, dd:dd, g1:g1, g2:g2, g3:g3,
+           sd20:sd(r20), hi:hi, close:closes[i]};
+    }
+    // persistence: state flips only after `persist` consecutive agreeing days
+    var sig=0, run=1;
+    for(i=1;i<comb.length;i++){
+      run = comb[i]===comb[i-1] ? run+1 : 1;
+      if(run>=P.persist) sig=comb[i];
+    }
+    var held=1;
+    for(i=comb.length-2;i>=0;i--){ if(comb[i]===comb[comb.length-1]) held++; else break; }
+    out.signal=sig; out.heldApprox=held;
+    return out;
+  }
+
+  function render(g, cached){
+    $("app").classList.remove("hide"); $("setup").classList.add("hide");
+    $("msgs").innerHTML="";
+    if(g.err){
+      $("verdict").className="verdict unk";
+      $("big").textContent="UNAVAILABLE";
+      $("vsub").textContent="No signal produced.";
+      $("gates").innerHTML="";
+      $("msgs").innerHTML='<div class="msg err">'+g.err+'</div>';
+      $("asof").textContent="";
+      return;
+    }
+    var hold=g.signal===1;
+    $("verdict").className="verdict "+(hold?"go":"stop");
+    $("big").textContent=hold?"HOLD TQQQ":"HOLD T-BILLS";
+    var blockers=[];
+    if(!g.g1) blockers.push("absolute vol");
+    if(!g.g2) blockers.push("vol shock");
+    if(!g.g3) blockers.push("drawdown");
+    $("vsub").textContent = blockers.length
+      ? "Blocked by "+blockers.join(", ")+"."
+      : "All three gates pass.";
+    $("asof").textContent = "close "+g.date;
+
+    var trip=(P.rvThr/Math.sqrt(252)*100).toFixed(3);
+    var rows=[
+      {n:1,nm:"Absolute volatility",val:(g.v20*100).toFixed(2)+"%",thr:"< 35%",ok:g.g1,
+       note:"trips above "+trip+"% daily sigma (now "+(g.sd20*100).toFixed(3)+"%)"},
+      {n:2,nm:"Volatility shock",val:g.ratio.toFixed(3),thr:"< 1.10",ok:g.g2,
+       note:"20-day vol against its own 250-day baseline"},
+      {n:3,nm:"Drawdown",val:(g.dd*100).toFixed(2)+"%",thr:"exit < -20%",ok:g.g3,
+       note:((P.ddExit+g.dd)*100).toFixed(1)+" pts of further fall before it exits"}
+    ];
+    $("gates").innerHTML = rows.map(function(r){
+      return '<div class="gate '+(r.ok?"pass":"block")+'">'+
+        '<div class="n">'+r.n+'</div>'+
+        '<div><div class="nm">'+r.nm+'</div><div class="note">'+r.note+'</div></div>'+
+        '<div><div class="val">'+r.val+'</div><div class="thr">'+r.thr+'</div></div></div>';
+    }).join("");
+
+    if(cached) $("msgs").innerHTML='<div class="msg warn">Offline — showing the last '+
+      'successful reading, from close '+g.date+'. Pull a refresh when you have signal.</div>';
+  }
+
+  function load(force){
+    var k=localStorage.getItem(KEY);
+    if(!k){ $("setup").classList.remove("hide"); $("app").classList.add("hide"); return; }
+    $("app").classList.remove("hide"); $("setup").classList.add("hide");
+    $("big").innerHTML='<span class="spin"></span>';
+    $("vsub").textContent="Fetching "+P.sym+" history…";
+    var url="https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol="+
+            P.sym+"&outputsize=full&apikey="+encodeURIComponent(k);
+    fetch(url).then(function(r){return r.json()}).then(function(d){
+      if(d["Note"]||d["Information"]) throw new Error(
+        "Alpha Vantage rate limit or key problem: "+(d["Note"]||d["Information"]));
+      if(d["Error Message"]) throw new Error("Alpha Vantage rejected the request: "+d["Error Message"]);
+      var ts=d["Time Series (Daily)"];
+      if(!ts) throw new Error("Unexpected response shape — no daily series returned.");
+      var dates=Object.keys(ts).sort();
+      var closes=dates.map(function(dt){return parseFloat(ts[dt]["4. close"])});
+      var g=compute(dates, closes);
+      try{ localStorage.setItem(CACHE, JSON.stringify(g)); }catch(e){}
+      render(g,false);
+    }).catch(function(e){
+      var c=localStorage.getItem(CACHE);
+      if(c){ try{ render(JSON.parse(c), true); }catch(_){ } }
+      else {
+        $("verdict").className="verdict unk";
+        $("big").textContent="UNAVAILABLE"; $("vsub").textContent="";
+        $("gates").innerHTML="";
+      }
+      $("msgs").insertAdjacentHTML("beforeend",
+        '<div class="msg err">'+String(e.message||e)+'</div>');
+    });
+  }
+
+  $("save").addEventListener("click", function(){
+    var v=$("key").value.trim();
+    if(!v) return;
+    localStorage.setItem(KEY, v); load(true);
+  });
+  $("refresh").addEventListener("click", function(){ load(true); });
+  $("reset").addEventListener("click", function(){
+    localStorage.removeItem(KEY); localStorage.removeItem(CACHE);
+    $("setup").classList.remove("hide"); $("app").classList.add("hide");
+  });
+
+  var c=localStorage.getItem(CACHE);
+  if(c && localStorage.getItem(KEY)){ try{ render(JSON.parse(c), true); }catch(e){} }
+  load(false);
+})();
+</script>
+</body>
+</html>
