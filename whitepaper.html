@@ -176,19 +176,19 @@ one-day execution lag, idle cash earning the real 13-week T-bill rate.</p>
 <h2>Today's signal</h2>
 <div class="signal">
   <div>
-    <div class="eyebrow" style="margin:0 0 4px">Close 2026-08-07</div>
-    <div class="big">Hold T-bills</div>
+    <div class="eyebrow" style="margin:0 0 4px" id="sigDate">Close 2026-08-17</div>
+    <div class="big" id="sigBig">Hold T-bills</div>
   </div>
   <div style="flex:1;min-width:260px">
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-      <span class="pill yes">Vol 26.2% &lt; 35%</span>
-      <span class="pill no">Shock 1.34 &gt; 1.10</span>
-      <span class="pill yes">Drawdown −3.1%</span>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px" id="sigPills">
+      <span class="pill yes">Vol 23.8% &lt; 35%</span>
+      <span class="pill no">Shock 1.22 &gt; 1.10</span>
+      <span class="pill yes">Drawdown −2.2%</span>
     </div>
-    <p style="margin:0;font-size:.88rem">Blocked by the vol-shock gate since
-    8 June 2026. The index sits 3% off its high, but 20-day volatility is running
-    34% above its own one-year baseline — a rally on unstable footing, which is
-    precisely the regime that punishes 3× leverage.</p>
+    <p style="margin:0;font-size:.88rem" id="sigNote">Blocked by the vol-shock gate
+    since 8 June 2026. The index sits 2% off its high, but 20-day volatility is
+    running 22% above its own one-year baseline — a rally on unstable footing,
+    which is precisely the regime that punishes 3× leverage.</p>
   </div>
 </div>
 
@@ -717,5 +717,123 @@ one-day execution lag. This is a backtest, not a forecast, and not investment ad
 
 </div>
 
+
+<script>
+/* The panel above was a frozen snapshot, which is the wrong thing to put in a
+   document meant to be passed around - it kept claiming to be "today" while
+   ageing. It now recomputes from data.json, the same file and the same
+   arithmetic the gate page uses, so the two can never disagree. The markup
+   carries the reading at publication time as a fallback, and every number is
+   printed next to its close date, so a page with scripting blocked still tells
+   the reader exactly how old it is. */
+(function () {
+  var P = {rvWin:20, rvThr:0.35, vrSlow:250, vrThr:1.10,
+           ddWin:250, ddExit:0.20, ddReenter:0.10, persist:2};
+  var $ = function (i) { return document.getElementById(i); };
+  var MONTH = ["January","February","March","April","May","June","July",
+               "August","September","October","November","December"];
+
+  function sd(a) {
+    if (a.length < 2) return NaN;
+    var m = 0, i;
+    for (i = 0; i < a.length; i++) m += a[i];
+    m /= a.length;
+    var s = 0;
+    for (i = 0; i < a.length; i++) s += (a[i] - m) * (a[i] - m);
+    return Math.sqrt(s / (a.length - 1));
+  }
+
+  function longDate(iso) {
+    var p = String(iso).split("-");
+    if (p.length !== 3) return iso;
+    return (+p[2]) + " " + MONTH[(+p[1]) - 1] + " " + p[0];
+  }
+
+  function compute(dates, closes) {
+    var n = closes.length, rets = [], i, j;
+    for (i = 1; i < n; i++) rets.push(closes[i] / closes[i - 1] - 1);
+    if (n < P.vrSlow + 2) return null;
+    for (i = 0; i < rets.length; i++) if (Math.abs(rets[i]) > 0.25) return null;
+
+    var g3prev = 1, rows = [], comb = [];
+    for (i = P.vrSlow; i < n; i++) {
+      var v20 = sd(rets.slice(i - P.rvWin, i)) * Math.sqrt(252);
+      var v250 = sd(rets.slice(i - P.vrSlow, i)) * Math.sqrt(252);
+      var g1 = v20 < P.rvThr ? 1 : 0, ratio = v20 / v250;
+      var g2 = ratio < P.vrThr ? 1 : 0;
+      var hi = -Infinity;
+      for (j = i - P.ddWin + 1; j <= i; j++) if (closes[j] > hi) hi = closes[j];
+      var dd = closes[i] / hi - 1, g3;
+      if (dd < -P.ddExit) g3 = 0; else if (dd > -P.ddReenter) g3 = 1; else g3 = g3prev;
+      g3prev = g3;
+      comb.push(Math.min(g1, Math.min(g2, g3)));
+      rows.push({date: dates[i], v20: v20, ratio: ratio, dd: dd, g1: g1, g2: g2, g3: g3});
+    }
+    var sig = 0, run = 1, sigs = [];
+    for (i = 1; i < comb.length; i++) {
+      run = comb[i] === comb[i - 1] ? run + 1 : 1;
+      if (run >= P.persist) sig = comb[i];
+      sigs.push(sig);
+    }
+    var held = 1;
+    for (i = sigs.length - 2; i >= 0; i--) {
+      if (sigs[i] !== sigs[sigs.length - 1]) break;
+      held++;
+    }
+    var g = rows[rows.length - 1];
+    g.signal = sigs[sigs.length - 1];
+    g.held = held;
+    g.since = rows[1 + sigs.length - held].date;
+    return g;
+  }
+
+  function pill(ok, text) {
+    return '<span class="pill ' + (ok ? "yes" : "no") + '">' + text + "</span>";
+  }
+
+  function render(g) {
+    $("sigDate").textContent = "Close " + g.date;
+    $("sigBig").textContent = g.signal ? "Hold TQQQ" : "Hold T-bills";
+    $("sigPills").innerHTML =
+      pill(g.g1, "Vol " + (g.v20 * 100).toFixed(1) + "% " + (g.g1 ? "&lt;" : "&gt;") + " 35%") +
+      pill(g.g2, "Shock " + g.ratio.toFixed(2) + " " + (g.g2 ? "&lt;" : "&gt;") + " 1.10") +
+      pill(g.g3, "Drawdown " + (g.dd * 100).toFixed(1).replace("-", "−") + "%");
+
+    var blockers = [];
+    if (!g.g1) blockers.push("absolute-volatility");
+    if (!g.g2) blockers.push("vol-shock");
+    if (!g.g3) blockers.push("drawdown");
+    var note;
+    if (!blockers.length) {
+      note = "All three gates pass — in TQQQ for " + g.held +
+             " sessions, since " + longDate(g.since) + ".";
+    } else {
+      note = "Blocked by the " + blockers.join(" and ") + " gate" +
+             (blockers.length > 1 ? "s" : "") + " since " + longDate(g.since) +
+             ", " + g.held + " sessions. The index sits " +
+             Math.abs(g.dd * 100).toFixed(0) + "% off its high, ";
+      var over = (g.ratio - 1) * 100;
+      note += over >= 0
+        ? "and 20-day volatility is running " + over.toFixed(0) +
+          "% above its own one-year baseline"
+        : "and 20-day volatility is " + Math.abs(over).toFixed(0) +
+          "% below its own one-year baseline";
+      note += (!g.g2 && g.dd > -0.10)
+        ? " — a rally on unstable footing, which is precisely the regime that punishes 3× leverage."
+        : ".";
+    }
+    $("sigNote").textContent = note;
+  }
+
+  fetch("data.json?t=" + Date.now(), {cache: "no-store"})
+    .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+    .then(function (d) {
+      if (!d.dates || !d.closes || d.dates.length !== d.closes.length) throw 0;
+      var g = compute(d.dates, d.closes);
+      if (g) render(g);
+    })
+    .catch(function () { /* leave the published fallback, which is dated */ });
+})();
+</script>
 </body>
 </html>
