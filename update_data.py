@@ -32,6 +32,24 @@ def fetch():
         return json.loads(r.read())
 
 
+def drop_unsettled_tail(res, rows):
+    """Discard a trailing bar for a session that has not closed yet.
+
+    Yahoo publishes the CURRENT day as a daily bar carrying the live price. This
+    job runs three-hourly, so it lands inside market hours and would otherwise
+    compute the gate from an intraday quote and label it a close - a reading
+    that flips during the session. The gate is defined on closes only.
+    """
+    meta = res.get("meta") or {}
+    t = meta.get("regularMarketTime")
+    if not rows or not t:
+        return rows
+    when = datetime.fromtimestamp(t, timezone.utc)
+    if rows[-1][0] == when.strftime("%Y-%m-%d") and when.hour < 20:
+        return rows[:-1]
+    return rows
+
+
 def settled_meta_row(res, last_date):
     """Recover a session Yahoo has settled but serves as a null daily bar.
 
@@ -65,6 +83,7 @@ def main():
 
     rows = [(datetime.fromtimestamp(t, timezone.utc).strftime("%Y-%m-%d"), c)
             for t, c in zip(stamps, closes) if c is not None]
+    rows = drop_unsettled_tail(res, rows)
     extra = settled_meta_row(res, rows[-1][0] if rows else None)
     if extra:
         rows.append(extra)
