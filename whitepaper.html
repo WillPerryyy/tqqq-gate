@@ -177,7 +177,7 @@ one-day execution lag, idle cash earning the real 13-week T-bill rate.</p>
 <div class="signal">
   <div>
     <div class="eyebrow" style="margin:0 0 4px" id="sigDate">Close 2026-08-17</div>
-    <div class="big" id="sigBig">Hold gold</div>
+    <div class="big" id="sigBig">Hold Treasuries</div>
   </div>
   <div style="flex:1;min-width:260px">
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px" id="sigPills">
@@ -191,20 +191,80 @@ one-day execution lag, idle cash earning the real 13-week T-bill rate.</p>
     which is precisely the regime that punishes 3× leverage.</p>
   </div>
 </div>
-<p class="sub"><strong>Note on the defensive leg.</strong> Every backtested figure in
-this document — the 36.6% CAGR, the −46.8% drawdown, the growth of $1 — is the
-TQQQ/T-bill rule tested over 41 years. The live signal above names <strong>1x gold
-bullion</strong> (GLD, IAU or GLDM) instead, because a later study found gold worth
-about +6.3 points of CAGR for roughly 3 points of extra drawdown. That result rests
-on 2000–2026 only, since no daily bullion series reaches further back, and that
-window contains exactly one gold regime cycle — its bull market. The gates are the
-well-tested part; the defensive asset is not tested to the same standard.</p>
+<p class="sub">The signal above names the <strong>defensive leg</strong> — what the money
+sits in when the gates block. The rest of this document tests T-bills in that slot;
+the section below tests longer Treasuries, which is what the signal now reads.</p>
+
+<h2>What the money sits in while the gates are shut</h2>
+
+<p class="prose">The three gates decide TQQQ or not-TQQQ. What <em>not</em> means is a
+separate question, and for a rule that spends 40% of its life out of the market it is
+worth about as much as the gates themselves. Cash is the safe default. Longer Treasuries
+pay a term premium for holding duration, and they have historically risen when equities
+fall — which is precisely when this rule is holding them.</p>
+
+<p class="prose">Everything below is the identical gate, identical dates, identical costs.
+Only the out-of-market asset changes. Treasury returns are reconstructed as a
+constant-maturity par bond from the 10-year yield, less a 0.15% fund fee; the
+reconstruction was validated against the traded ETFs, correlating 0.95 with IEF and
+0.90 with TLT over their overlaps.</p>
+
+<div class="tw"><table>
+<thead><tr><th>Defensive leg</th><th>CAGR</th><th>Max drawdown</th><th>Sharpe</th>
+<th>Sortino</th><th>MAR</th><th>Growth of $1</th></tr></thead>
+<tbody>
+<tr><td>T-bills</td><td class="num">36.59%</td><td class="num r">−46.75%</td><td class="num">0.89</td><td class="num">0.95</td><td class="num">0.78</td><td class="num">$341,568</td></tr>
+<tr><td>10-year Treasury</td><td class="num g">39.65%</td><td class="num r">−47.68%</td><td class="num">0.94</td><td class="num">1.14</td><td class="num">0.83</td><td class="num">$843,875</td></tr>
+<tr class="hl"><td><strong>20-year Treasury</strong></td><td class="num g">40.95%</td><td class="num r">−48.17%</td><td class="num">0.95</td><td class="num">1.20</td><td class="num">0.85</td><td class="num">$1,230,766</td></tr>
+<tr><td>20-year Treasury, carry only</td><td class="num">37.38%</td><td class="num r">−46.74%</td><td class="num">0.90</td><td class="num">0.97</td><td class="num">0.80</td><td class="num">$431,602</td></tr>
+<tr><td>QQQ buy &amp; hold</td><td class="num">15.18%</td><td class="num r">−82.96%</td><td class="num">0.56</td><td class="num">0.74</td><td class="num">0.18</td><td class="num">$322</td></tr>
+<tr><td>TQQQ buy &amp; hold</td><td class="num">15.49%</td><td class="num r">−99.98%</td><td class="num">0.53</td><td class="num">0.70</td><td class="num">0.15</td><td class="num">$359</td></tr>
+</tbody></table></div>
+<p class="sub">1985-10-02 to 2026-08-14, 10,296 sessions, 40.9 years. Invested 59.6% of
+the time, 2.33 round trips a year — unchanged, because the gates are unchanged.</p>
+
+<p class="prose">Swapping T-bills for 20-year Treasuries is worth <strong>+4.36 points of
+CAGR for 1.4 points of extra drawdown</strong>, and it holds in both halves of the sample:
+42.52% in-sample against the T-bill version's 36.52%, and 39.08% out-of-sample against
+36.68%. Growth of $1 goes from $342k to $1.23m.</p>
+
+<div class="note">
+<strong>Read the fourth row before believing the third.</strong> The 10-year yield fell
+from 10.30% in 1985 to 4.70% in 2026. Holding duration through a forty-year bull market
+in bonds paid a capital gain that cannot repeat from here. The <em>carry only</em> row
+strips that windfall out — same bond, same dates, but assuming the yield never moves, so
+it earns the coupon and nothing else. That is the repeatable part, and it is worth
+<strong>+0.79 points, not +4.36</strong>. The honest forward expectation is the small
+number. Everything above it is a bet that yields keep falling, and it reverses if they rise.
+</div>
+
+<div class="tw"><table>
+<thead><tr><th>Era</th><th>T-bills — CAGR / max DD</th><th>20-year Treasury — CAGR / max DD</th></tr></thead>
+<tbody>
+<tr><td>1985–1989</td><td class="num">30.87% / −29.1%</td><td class="num g">42.83% / −30.5%</td></tr>
+<tr><td>1990–1999</td><td class="num">59.98% / −46.7%</td><td class="num g">60.95% / −48.2%</td></tr>
+<tr><td>2000–2009</td><td class="num">11.94% / −43.7%</td><td class="num g">18.99% / −43.7%</td></tr>
+<tr><td>2010–2019</td><td class="num">30.72% / −38.5%</td><td class="num g">36.00% / −38.9%</td></tr>
+<tr class="hl"><td>2020–2026</td><td class="num">59.49% / −38.4%</td><td class="num r">55.74% / −37.7%</td></tr>
+</tbody></table></div>
+<p class="sub">The last row is the one to sit with. 2022 took the Nasdaq down 32.6% and
+20-year Treasuries down 29.0% <em>at the same time</em> — the hedge and the risk asset
+falling together. Duration only protects while the stock/bond correlation is negative,
+and that correlation was positive through the 1970s–90s inflation era and turned positive
+again in 2022.</p>
+
+<p class="prose">Gold was tested in the same slot and rejected. Over 2000–2026 it looked
+better than Treasuries, but that window begins at the bottom of gold's twenty-year bear
+market. Extended back to 1986 using the longest daily bullion series available — the
+Central Fund of Canada, a listed physical gold and silver trust — gold adds only +1.3
+points of CAGR while pushing max drawdown from −46.8% to −56.3%. Through 1986–2000 it
+cost 5.2 points a year. It fails on the full record.</p>
 
 <h2>The rule</h2>
 <p class="prose">Three gates, computed on the Nasdaq-100 index at the close. All three
 must pass, and the combined verdict must hold two consecutive sessions before the
-position changes. Otherwise the money sits in the defensive leg — T-bills as
-tested below, gold as currently signalled above.</p>
+position changes. Otherwise the money sits in the defensive leg — 20-year
+Treasuries (TLT), for the reasons set out above.</p>
 
 <div class="gates">
   <div class="gate"><div class="num">1</div><div>
@@ -802,7 +862,7 @@ one-day execution lag. This is a backtest, not a forecast, and not investment ad
 
   function render(g) {
     $("sigDate").textContent = "Close " + g.date;
-    $("sigBig").textContent = g.signal ? "Hold TQQQ" : "Hold gold";
+    $("sigBig").textContent = g.signal ? "Hold TQQQ" : "Hold Treasuries";
     $("sigPills").innerHTML =
       pill(g.g1, "Vol " + (g.v20 * 100).toFixed(1) + "% " + (g.g1 ? "&lt;" : "&gt;") + " 35%") +
       pill(g.g2, "Shock " + g.ratio.toFixed(2) + " " + (g.g2 ? "&lt;" : "&gt;") + " 1.10") +

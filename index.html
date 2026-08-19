@@ -148,7 +148,7 @@ a{color:var(--go)}
     }
     var hold = g.signal===1;
     $("verdict").className = "verdict " + (hold?"go":"stop");
-    $("big").textContent = hold ? "HOLD TQQQ" : "HOLD GOLD";
+    $("big").textContent = hold ? "HOLD TQQQ" : "HOLD TREASURIES";
     var b=[];
     if(!g.g1) b.push("absolute vol");
     if(!g.g2) b.push("vol shock");
@@ -157,7 +157,7 @@ a{color:var(--go)}
     // and the defensive leg is now 1x bullion rather than T-bills, so name the
     // vehicle here instead of leaving the reader to remember which it is.
     $("vsub").textContent = (b.length ? "Blocked by "+b.join(", ")+"." : "All three gates pass.")
-      + (hold ? "" : " Defensive leg: 1x gold bullion — GLD, IAU or GLDM.");
+      + (hold ? "" : " Defensive leg: 20-year Treasuries — TLT, or VGLT / SPTL.");
     $("asof").textContent = "close "+g.date;
 
     var trip=(P.rvThr/Math.sqrt(252)*100).toFixed(3);
