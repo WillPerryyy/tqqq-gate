@@ -1,10 +1,25 @@
 name: Refresh prices
 
-# 21:30 UTC on weekdays = 17:30 New York, comfortably after the 16:00 close.
-# The rule reads the prior close by design, so once a day is the right cadence.
+# 20:32 UTC on weekdays = 16:32 New York, half an hour after the close and past
+# the closing auction. It used to be 21:30, which sounds fine until you measure
+# what GitHub actually does: scheduled runs sit in a queue and fired 14-17
+# minutes late every single day (21:44, 21:46, 21:46, 21:47). That put the
+# reading up at 17:47 New York, nearly two hours after the close, so anyone
+# checking in the late afternoon saw yesterday's number and assumed a failure.
+#
+# The 22:32 run is a backup. GitHub silently SKIPS scheduled runs under load -
+# it is documented behaviour, not a fault - and one missed run would otherwise
+# freeze the page for a day. Re-running is safe: update_data.py rewrites the
+# whole 420-session series each time and refuses to publish a series whose last
+# close is older than the one already live, and the commit step below compares
+# the last close so an unchanged file never commits.
+#
+# Rewriting the full series each run also means a provisional closing print gets
+# corrected automatically on the next run.
 on:
   schedule:
-    - cron: "30 21 * * 1-5"
+    - cron: "32 20 * * 1-5"
+    - cron: "32 22 * * 1-5"
   workflow_dispatch:
 
 permissions:
