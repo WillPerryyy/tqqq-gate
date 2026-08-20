@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="A volatility-gated rule for switching between TQQQ and T-bills, tested on 41 years of reconstructed and real data, with walk-forward, cross-asset and bootstrap validation.">
 <meta property="og:title" content="The TQQQ Volatility Gate — a 41-year study">
-<meta property="og:description" content="Gating leverage by volatility, not by trend. 36.6% CAGR against buy and hold's 15.4%, with drawdown cut from -99.98% to -46.8%.">
+<meta property="og:description" content="Gating leverage by volatility, not by trend. 36.6% CAGR against buy and hold's 15.5%, with drawdown cut from -99.98% to -46.8%.">
 <meta property="og:type" content="article">
 <link rel="icon" href="icon.svg">
 <title>TQQQ Timing Strategy — Volatility-Gated Leverage</title>
@@ -160,7 +160,7 @@ for taxable accounts, halves the round trips.</p>
 
 <div class="stats">
   <div class="stat"><div class="k">Strategy CAGR</div><div class="v up">36.6%</div>
-    <div class="n">vs 15.4% buy &amp; hold</div></div>
+    <div class="n">vs 15.5% buy &amp; hold</div></div>
   <div class="stat"><div class="k">Max drawdown</div><div class="v up">−46.8%</div>
     <div class="n">vs −99.98% buy &amp; hold</div></div>
   <div class="stat"><div class="k">Sharpe</div><div class="v">0.89</div>
@@ -168,7 +168,7 @@ for taxable accounts, halves the round trips.</p>
   <div class="stat"><div class="k">Time in TQQQ</div><div class="v">59.6%</div>
     <div class="n">2.3 round trips/yr</div></div>
   <div class="stat"><div class="k">Growth of $1</div><div class="v">$341k</div>
-    <div class="n">vs $348 buy &amp; hold</div></div>
+    <div class="n">vs $359 buy &amp; hold</div></div>
 </div>
 <p class="sub">Synthetic TQQQ before Feb 2010, actual fund prices after. 5bp costs,
 one-day execution lag, idle cash earning the real 13-week T-bill rate.</p>
@@ -308,7 +308,7 @@ folk remedy — still suffers a <span class="r">−96%</span> drawdown on 3× le
 </div>
 <div class="legend">
 <span><i style="background:var(--teal)"></i>Strategy · $341,314</span>
-<span><i style="background:var(--slate)"></i>Vol-targeted variant · $818</span>
+<span><i style="background:var(--slate)"></i>Vol-targeted variant · $819</span>
 <span><i style="background:var(--rust)"></i>TQQQ buy &amp; hold · $348</span>
 <span><i style="background:var(--sand)"></i>QQQ buy &amp; hold (1×) · $318</span>
 <span><i style="background:var(--slate)"></i>T-bills · $3.59</span>
@@ -336,16 +336,16 @@ the 2000–02 collapse to $0.0002 is never recovered.</figcaption>
 <thead><tr><th>Episode</th><th>QQQ 1×</th><th>TQQQ B&amp;H</th><th>Strategy</th>
 <th>Vol-targeted</th><th>Time in</th></tr></thead>
 <tbody>
-<tr><td>1987 crash</td><td class="num r">−20.3%</td><td class="num r">−66.2%</td><td class="num g">+12.4%</td><td class="num g">+8.0%</td><td class="num">34%</td></tr>
-<tr><td>1990 recession</td><td class="num r">−27.6%</td><td class="num r">−67.0%</td><td class="num r">−40.8%</td><td class="num r">−23.4%</td><td class="num">28%</td></tr>
+<tr><td>1987 crash</td><td class="num r">−20.3%</td><td class="num r">−66.2%</td><td class="num g">+10.5%</td><td class="num g">+6.8%</td><td class="num">35%</td></tr>
+<tr><td>1990 recession</td><td class="num r">−27.6%</td><td class="num r">−67.0%</td><td class="num r">−40.8%</td><td class="num r">−23.5%</td><td class="num">29%</td></tr>
 <tr class="hl"><td>Dot-com bust 2000–02</td><td class="num r">−82.6%</td><td class="num r">−100.0%</td><td class="num g">+9.9%</td><td class="num g">+9.9%</td><td class="num">0%</td></tr>
 <tr><td>GFC 2007–09</td><td class="num r">−52.3%</td><td class="num r">−94.4%</td><td class="num r">−31.3%</td><td class="num r">−10.2%</td><td class="num">17%</td></tr>
-<tr><td>2011 debt ceiling</td><td class="num r">−13.1%</td><td class="num r">−41.0%</td><td class="num r">−26.0%</td><td class="num r">−14.7%</td><td class="num">36%</td></tr>
+<tr><td>2011 debt ceiling</td><td class="num r">−13.1%</td><td class="num r">−41.0%</td><td class="num r">−26.4%</td><td class="num r">−14.9%</td><td class="num">36%</td></tr>
 <tr><td>2015–16 China</td><td class="num r">−14.5%</td><td class="num r">−43.4%</td><td class="num r">−28.7%</td><td class="num r">−18.8%</td><td class="num">52%</td></tr>
-<tr><td>2018 Q4</td><td class="num r">−22.5%</td><td class="num r">−57.3%</td><td class="num r">−24.9%</td><td class="num r">−17.3%</td><td class="num">14%</td></tr>
-<tr><td>COVID crash</td><td class="num r">−27.2%</td><td class="num r">−69.0%</td><td class="num r">−8.4%</td><td class="num r">−5.7%</td><td class="num">9%</td></tr>
+<tr><td>2018 Q4</td><td class="num r">−22.5%</td><td class="num r">−57.3%</td><td class="num r">−24.5%</td><td class="num r">−16.9%</td><td class="num">15%</td></tr>
+<tr><td>COVID crash</td><td class="num r">−27.2%</td><td class="num r">−69.0%</td><td class="num r">−5.8%</td><td class="num r">−3.8%</td><td class="num">12%</td></tr>
 <tr class="hl"><td>2022 bear</td><td class="num r">−34.1%</td><td class="num r">−80.5%</td><td class="num g">+2.0%</td><td class="num g">+2.0%</td><td class="num">0%</td></tr>
-<tr><td>2025 tariff shock</td><td class="num r">−11.7%</td><td class="num r">−39.1%</td><td class="num r">−25.0%</td><td class="num r">−11.5%</td><td class="num">24%</td></tr>
+<tr><td>2025 tariff shock</td><td class="num r">−11.7%</td><td class="num r">−39.1%</td><td class="num r">−25.0%</td><td class="num r">−11.4%</td><td class="num">26%</td></tr>
 </tbody></table></div>
 <p class="sub">The two events that would have ended a leveraged account — 2000–02 and
 2022 — are the two the rule sat out almost entirely. Slower grinding declines like
@@ -355,12 +355,12 @@ the 2000–02 collapse to $0.0002 is never recovered.</figcaption>
 <div class="tw"><table>
 <thead><tr><th>Approach</th><th>CAGR</th><th>Max DD</th><th>MAR</th><th>Sharpe</th><th>Ulcer</th><th>Trips/yr</th></tr></thead>
 <tbody>
-<tr><td>TQQQ buy &amp; hold</td><td class="num">15.41%</td><td class="num r">−99.98%</td><td class="num">0.15</td><td class="num">0.53</td><td class="num">79.9%</td><td class="num">0</td></tr>
-<tr><td>QQQ buy &amp; hold (no leverage)</td><td class="num">15.15%</td><td class="num r">−82.96%</td><td class="num">0.18</td><td class="num">0.56</td><td class="num">36.0%</td><td class="num">0</td></tr>
-<tr><td>TQQQ + 200-day SMA</td><td class="num">20.31%</td><td class="num r">−96.13%</td><td class="num">0.21</td><td class="num">0.56</td><td class="num">60.9%</td><td class="num">3.4</td></tr>
-<tr><td>TQQQ + 10-month SMA</td><td class="num">21.75%</td><td class="num r">−91.08%</td><td class="num">0.24</td><td class="num">0.58</td><td class="num">54.4%</td><td class="num">3.3</td></tr>
-<tr><td>TQQQ + volatility gate only</td><td class="num">31.40%</td><td class="num r">−77.86%</td><td class="num">0.40</td><td class="num">0.73</td><td class="num">31.9%</td><td class="num">0.8</td></tr>
-<tr class="hl"><td>TQQQ + all three gates</td><td class="num">36.61%</td><td class="num g">−46.75%</td><td class="num">0.78</td><td class="num">0.89</td><td class="num">18.3%</td><td class="num">2.3</td></tr>
+<tr><td>TQQQ buy &amp; hold</td><td class="num">15.49%</td><td class="num r">−99.98%</td><td class="num">0.15</td><td class="num">0.53</td><td class="num">79.9%</td><td class="num">0</td></tr>
+<tr><td>QQQ buy &amp; hold (no leverage)</td><td class="num">15.18%</td><td class="num r">−82.96%</td><td class="num">0.18</td><td class="num">0.56</td><td class="num">36.0%</td><td class="num">0</td></tr>
+<tr><td>TQQQ + 200-day SMA</td><td class="num">20.39%</td><td class="num r">−96.13%</td><td class="num">0.21</td><td class="num">0.56</td><td class="num">60.9%</td><td class="num">3.4</td></tr>
+<tr><td>TQQQ + 210-day SMA</td><td class="num">21.83%</td><td class="num r">−91.08%</td><td class="num">0.24</td><td class="num">0.58</td><td class="num">54.4%</td><td class="num">3.3</td></tr>
+<tr><td>TQQQ + volatility gate only</td><td class="num">31.38%</td><td class="num r">−83.96%</td><td class="num">0.37</td><td class="num">0.71</td><td class="num">36.5%</td><td class="num">1.0</td></tr>
+<tr class="hl"><td>TQQQ + all three gates</td><td class="num">36.59%</td><td class="num g">−46.75%</td><td class="num">0.78</td><td class="num">0.89</td><td class="num">18.3%</td><td class="num">2.3</td></tr>
 </tbody></table></div>
 <p class="sub">The volatility gate alone does most of the work. The other two gates
 mainly convert drawdown into return — MAR nearly doubles from 0.40 to 0.78.</p>
@@ -407,10 +407,10 @@ often and are invested as often; only <em>when</em> they switch is random.</p>
 <div class="tw"><table>
 <thead><tr><th>Metric</th><th>Strategy</th><th>Random mean</th><th>Random best of 5,000</th><th>p-value</th></tr></thead>
 <tbody>
-<tr><td>CAGR</td><td class="num g">36.61%</td><td class="num">10.01%</td><td class="num">34.78%</td><td class="num">&lt;0.0002</td></tr>
-<tr><td>Max drawdown</td><td class="num g">−46.75%</td><td class="num">−98.86%</td><td class="num">−77.82%</td><td class="num">&lt;0.0002</td></tr>
-<tr><td>MAR</td><td class="num g">0.783</td><td class="num">0.102</td><td class="num">0.394</td><td class="num">&lt;0.0002</td></tr>
-<tr><td>Sharpe</td><td class="num g">0.887</td><td class="num">0.405</td><td class="num">0.761</td><td class="num">&lt;0.0002</td></tr>
+<tr><td>CAGR</td><td class="num g">36.59%</td><td class="num">10.48%</td><td class="num">34.02%</td><td class="num">&lt;0.0002</td></tr>
+<tr><td>Max drawdown</td><td class="num g">−46.75%</td><td class="num">−98.73%</td><td class="num">−73.61%</td><td class="num">&lt;0.0002</td></tr>
+<tr><td>MAR</td><td class="num g">0.783</td><td class="num">0.107</td><td class="num">0.392</td><td class="num">&lt;0.0002</td></tr>
+<tr><td>Sharpe</td><td class="num g">0.887</td><td class="num">0.465</td><td class="num">0.830</td><td class="num">&lt;0.0002</td></tr>
 </tbody></table></div>
 <p class="sub">Zero of 5,000 matched it on any metric. Random switching at the same
 frequency produces a median −99.6% drawdown, so the trading intensity is not what
@@ -428,7 +428,7 @@ result is a broad plateau, not a spike.</p>
 <thead><tr><th>Window</th><th>CAGR</th><th>Max DD</th><th>Sharpe</th><th>vs B&amp;H CAGR</th></tr></thead>
 <tbody>
 <tr><td>1985–2007</td><td class="num">36.52%</td><td class="num">−46.75%</td><td class="num">0.83</td><td class="num">5.42%</td></tr>
-<tr><td>2008–2026</td><td class="num">36.72%</td><td class="num">−38.45%</td><td class="num">0.97</td><td class="num">28.64%</td></tr>
+<tr><td>2008–2026</td><td class="num">36.68%</td><td class="num">−38.45%</td><td class="num">0.97</td><td class="num">28.64%</td></tr>
 <tr><td>Real fund only, 2010–2026</td><td class="num">43.19%</td><td class="num">−38.45%</td><td class="num">1.07</td><td class="num">43.07%</td></tr>
 </tbody></table></div>
 <p class="sub">36.5% versus 36.7% across two independent halves of history whose buy
@@ -477,9 +477,9 @@ a materially calmer ride.</p>
 <div class="tw"><table>
 <thead><tr><th>1985–2026</th><th>CAGR</th><th>Max DD</th><th>Sharpe</th><th>Ulcer</th></tr></thead>
 <tbody>
-<tr><td>Full-exposure strategy</td><td class="num">36.61%</td><td class="num">−46.75%</td><td class="num">0.89</td><td class="num">18.3%</td></tr>
-<tr class="hl"><td>Vol-targeted variant</td><td class="num">17.85%</td><td class="num g">−28.73%</td><td class="num">0.77</td><td class="num">9.6%</td></tr>
-<tr><td>QQQ buy &amp; hold (1×)</td><td class="num">15.15%</td><td class="num r">−82.96%</td><td class="num">0.56</td><td class="num">36.0%</td></tr>
+<tr><td>Full-exposure strategy</td><td class="num">36.59%</td><td class="num">−46.75%</td><td class="num">0.89</td><td class="num">18.3%</td></tr>
+<tr class="hl"><td>Vol-targeted variant</td><td class="num">17.84%</td><td class="num g">−28.73%</td><td class="num">0.77</td><td class="num">9.6%</td></tr>
+<tr><td>QQQ buy &amp; hold (1×)</td><td class="num">15.18%</td><td class="num r">−82.96%</td><td class="num">0.56</td><td class="num">36.0%</td></tr>
 </tbody></table></div>
 <p class="sub">The vol-targeted version beats unleveraged QQQ on return while taking
 a third of its drawdown — arguably the more sensible product for most holders.</p>
@@ -561,9 +561,9 @@ down with cash until the drawdowns match changes the conclusion — and reverses
 <div class="tw"><table>
 <thead><tr><th>At an identical −53.98% after-tax drawdown</th><th>Net CAGR</th><th>Net MAR</th><th>Net Sharpe</th><th>Net vol</th></tr></thead>
 <tbody>
-<tr><td>Base rule, full exposure</td><td class="num">24.40%</td><td class="num">0.45</td><td class="num">0.65</td><td class="num">43.2%</td></tr>
-<tr class="hl"><td>Deferral variant at 75% exposure</td><td class="num g">26.63%</td><td class="num">0.49</td><td class="num">0.72</td><td class="num">39.5%</td></tr>
-<tr><td><em>Deferral variant, full exposure (not matched)</em></td><td class="num">31.82%</td><td class="num">0.56</td><td class="num">0.76</td><td class="num">46.7%</td></tr>
+<tr><td>Base rule, full exposure</td><td class="num">24.38%</td><td class="num">0.45</td><td class="num">0.65</td><td class="num">43.2%</td></tr>
+<tr class="hl"><td>Deferral variant at 75% exposure</td><td class="num g">26.61%</td><td class="num">0.49</td><td class="num">0.72</td><td class="num">39.5%</td></tr>
+<tr><td><em>Deferral variant, full exposure (not matched)</em></td><td class="num">31.80%</td><td class="num">0.56</td><td class="num">0.76</td><td class="num">46.7%</td></tr>
 </tbody></table></div>
 <p class="sub">At equal risk the advantage is <strong>+2.2 points, not +7.4</strong>.
 About two-thirds of the raw gap was leverage, not skill and not tax.</p>
@@ -572,23 +572,23 @@ About two-thirds of the raw gap was leverage, not skill and not tax.</p>
 <div class="tw"><table>
 <thead><tr><th>Bracket (short / long)</th><th>Base rule</th><th>Deferral, risk-matched</th><th>Exposure</th><th>Winner</th></tr></thead>
 <tbody>
-<tr><td>Zero tax (IRA / Roth)</td><td class="num">36.61%</td><td class="num">30.48%</td><td class="num">64%</td><td>base rule</td></tr>
-<tr><td>24% bracket (24 / 15)</td><td class="num">29.64%</td><td class="num">25.56%</td><td class="num">61%</td><td>base rule</td></tr>
-<tr class="hl"><td>32% + NIIT (35.8 / 18.8)</td><td class="num">26.03%</td><td class="num g">27.17%</td><td class="num">72%</td><td>deferral</td></tr>
-<tr class="hl"><td>Top federal + NIIT (40.8 / 23.8)</td><td class="num">24.40%</td><td class="num g">26.63%</td><td class="num">75%</td><td>deferral</td></tr>
-<tr class="hl"><td>+ New York 10.9% (51.7 / 34.7)</td><td class="num">20.69%</td><td class="num g">27.33%</td><td class="num">97%</td><td>deferral</td></tr>
-<tr class="hl"><td>+ California 13.3% (54.1 / 37.1)</td><td class="num">19.85%</td><td class="num g">26.17%</td><td class="num">95%</td><td>deferral</td></tr>
+<tr><td>Zero tax (IRA / Roth)</td><td class="num">36.59%</td><td class="num">30.47%</td><td class="num">64%</td><td>base rule</td></tr>
+<tr><td>24% bracket (24 / 15)</td><td class="num">29.63%</td><td class="num">25.55%</td><td class="num">61%</td><td>base rule</td></tr>
+<tr class="hl"><td>32% + NIIT (35.8 / 18.8)</td><td class="num">26.02%</td><td class="num g">27.16%</td><td class="num">72%</td><td>deferral</td></tr>
+<tr class="hl"><td>Top federal + NIIT (40.8 / 23.8)</td><td class="num">24.38%</td><td class="num g">26.61%</td><td class="num">75%</td><td>deferral</td></tr>
+<tr class="hl"><td>+ New York 10.9% (51.7 / 34.7)</td><td class="num">20.68%</td><td class="num g">27.32%</td><td class="num">97%</td><td>deferral</td></tr>
+<tr class="hl"><td>+ California 13.3% (54.1 / 37.1)</td><td class="num">19.84%</td><td class="num g">26.16%</td><td class="num">95%</td><td>deferral</td></tr>
 </tbody></table></div>
 <p class="sub">Once risk is controlled, the deferral rule is a <em>tax</em> strategy and
 nothing else — at zero tax the base rule beats it by six points. <strong>Use deferral at
 the 32% bracket or above; below that, or in a sheltered account, use the base rule.</strong>
 The crossover sits between the 24% and 32% brackets. Checked in the other direction too:
 levering the base rule up to the deferral variant's drawdown (111% exposure) reaches only
-26.12% against 31.82%, so the result is not an artefact of which rule was scaled.</p>
+26.12% against 31.80%, so the result is not an artefact of which rule was scaled.</p>
 
 <p class="sub">The risk-matched figures come from a cash/sleeve-separated tax engine that
 tracks cost basis when tax is paid out of the position, so its absolute levels sit about
-one point below the simpler engine used in the table above (24.40% against 25.91%). The
+one point below the simpler engine used in the table above (24.38% against 25.91%). The
 rankings and gaps are unaffected.</p>
 
 <h3>What the extra risk costs</h3>
@@ -599,7 +599,7 @@ from −46.8% to −57.0%. Here is exactly where that bites:</p>
 <div class="tw"><table>
 <thead><tr><th>Episode</th><th>TQQQ B&amp;H</th><th>Base rule</th><th>Taxable variant</th><th>Cost of deferring</th></tr></thead>
 <tbody>
-<tr><td>1987 crash</td><td class="num r">−66.2%</td><td class="num g">+12.4%</td><td class="num g">+3.5%</td><td class="num r">−8.9%</td></tr>
+<tr><td>1987 crash</td><td class="num r">−66.2%</td><td class="num g">+10.5%</td><td class="num g">+3.5%</td><td class="num r">−8.9%</td></tr>
 <tr><td>GFC 2007–09</td><td class="num r">−94.4%</td><td class="num r">−31.3%</td><td class="num r">−42.7%</td><td class="num r">−11.4%</td></tr>
 <tr><td>2015–16 China</td><td class="num r">−43.4%</td><td class="num r">−28.7%</td><td class="num r">−43.3%</td><td class="num r">−14.6%</td></tr>
 <tr class="hl"><td>Dot-com bust 2000–02</td><td class="num r">−100.0%</td><td class="num g">+9.9%</td><td class="num g">+9.9%</td><td class="num">0.0%</td></tr>
